@@ -7,7 +7,7 @@
     @apply text-red-800 text-xs
   }
   .button {
-    @apply text-white bg-zealthyPrimary hover:bg-zealthySecondary rounded-full px-[1.875rem] py-4;
+    @apply text-white bg-zealthyPrimary hover:bg-zealthySecondary rounded-full px-[1.875rem] py-4 transition-colors;
   }
   .breakpoint-x {
     @apply max-w-[1440px] px-4 md:px-12 mx-auto;
