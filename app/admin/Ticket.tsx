@@ -45,7 +45,7 @@ export default function Ticket(Props: TicketProps) {
     <div className="flex flex-col gap-1 w-full">
       <AnimatePresence>
         <button
-          className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4 cursor-pointer"
+          className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4 cursor-pointer transition-colors"
           onClick={() => setOpen(!open)}
         >
           <div>Ticket Name</div>
