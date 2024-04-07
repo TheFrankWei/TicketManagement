@@ -32,7 +32,7 @@ export default function RootLayout({
             </div>
           </div>
         </nav>
-        <div className="breakpoint-x my-16">{children}</div>
+        <div className="breakpoint-x">{children}</div>
       </body>
     </html>
   );
