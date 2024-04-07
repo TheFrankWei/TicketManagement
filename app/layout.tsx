@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <nav className="bg-zealthyNeutralSecondary py-5 absolute top-0 w-full">
+        <nav className="bg-zealthyNeutralSecondary py-5 w-full">
           <div className="flex flex-row justify-between gap-4 breakpoint-x">
             <div className="text-lg">Ticket Management Exercise</div>
             <div className="ml-auto flex flex-row gap-4">
