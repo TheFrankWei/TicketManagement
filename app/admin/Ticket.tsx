@@ -36,21 +36,23 @@ export default function Ticket(Props: TicketProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
-    console.log(data, "email sent");
+    console.log(
+      `email sent to .\nSubject: Your issue has been updated!\nBody:\nYour issue has been updated\nStatus: ${data.status}\nIssue:\n${data?.description}`
+    );
   };
 
   return (
     <div className="flex flex-col gap-1 w-full">
       <AnimatePresence>
-        <div
-          className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4"
+        <button
+          className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4 cursor-pointer"
           onClick={() => setOpen(!open)}
         >
           <div>Ticket Name</div>
           <div className="group-hover:text-zealthySecondary">
             {open ? <CaretUp size={24} /> : <CaretDown size={24} />}
           </div>
-        </div>
+        </button>
 
         {open && (
           <motion.div
@@ -61,8 +63,8 @@ export default function Ticket(Props: TicketProps) {
             className="flex flex-col gap-2 px-4 pt-2 pb-4"
           >
             <div>
-              <div>Status</div>
-              <div>Description</div>
+              <div>Current Status:</div>
+              <div>Latest Description:</div>
             </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -73,7 +75,12 @@ export default function Ticket(Props: TicketProps) {
                   id="status"
                   label="Update Status"
                   options={STATUS_OPTIONS}
-                  {...register("status", { required: true })}
+                  {...register("status", {
+                    required: {
+                      value: true,
+                      message: "Status is required",
+                    },
+                  })}
                 />
                 <ErrorMessage
                   errors={errors}
@@ -98,7 +105,7 @@ export default function Ticket(Props: TicketProps) {
                   render={({ message }) => <p className="error">{message}</p>}
                 />
               </div>
-              <div className="text-end pt-2">
+              <div className="text-center md:text-end pt-2">
                 <button type="submit" className="button">
                   Submit
                 </button>

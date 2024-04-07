@@ -19,8 +19,10 @@ export default function Home() {
     reset,
   } = useForm<FormInput>();
 
-  const onSubmit: SubmitHandler<FormInput> = (data, error) => {
-    console.log(data, "email sent", error);
+  const onSubmit: SubmitHandler<FormInput> = (data) => {
+    console.log(
+      `email sent to ${data?.email}.\nSubject: Thank you for reporting your issue!\nBody:\nThank you for reporting your issue!\nIssue:\n${data?.description}`
+    );
   };
   return (
     <main className="flex min-h-screen flex-col items-center">
