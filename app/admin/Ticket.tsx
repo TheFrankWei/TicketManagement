@@ -67,7 +67,7 @@ export default function Ticket(Props: TicketProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
       reset();
-      setOpen(false);
+    //   setOpen(false);
     },
   });
 
