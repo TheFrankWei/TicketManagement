@@ -4,7 +4,6 @@ import Input from "@/components/Input";
 import TextArea from "@/components/TextArea";
 import { ErrorMessage } from "@hookform/error-message";
 import { AnimatePresence, motion } from "framer-motion";
-import { createTicket } from "./actions";
 
 export interface TicketFormInput {
   name: string;

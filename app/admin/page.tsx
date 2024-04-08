@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchTickets } from "../actions";
 import Ticket, { Status } from "./Ticket";
 import { TicketPost, Ticket as TicketType } from "@prisma/client";
 
