@@ -67,7 +67,7 @@ export default function Ticket(Props: TicketProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
       reset();
-    //   setOpen(false);
+      //   setOpen(false);
     },
   });
 
@@ -148,8 +148,14 @@ export default function Ticket(Props: TicketProps) {
                 />
               </div>
               <div className="text-center md:text-start pt-2">
-                <button type="submit" className="button">
-                  Submit
+                <button
+                  type="submit"
+                  className="button"
+                  disabled={ticketPostMutation.status === "pending"}
+                >
+                  {ticketPostMutation.status === "pending"
+                    ? "Submitting..."
+                    : "Submit"}
                 </button>
               </div>
             </form>

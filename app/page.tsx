@@ -115,7 +115,7 @@ export default function Home() {
               </div>
               <button
                 type="submit"
-                className="button disabled:bg-zealthyNeutralSecondary"
+                className="button"
                 disabled={ticketMutation.status === "pending"}
               >
                 {ticketMutation.status === "pending"
