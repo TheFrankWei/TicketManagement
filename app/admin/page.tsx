@@ -2,11 +2,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Ticket from "./Ticket";
 import { TicketPost, Ticket as TicketType, Status } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 
 export type ITicket = TicketType & { description: TicketPost[] };
 
 export default function Admin() {
-  const [tickets, setTickets] = useState<ITicket[]>();
 
   //   const [statusSortAsc, setStatusSorcAsc] = useState<boolean>(false);
 
@@ -28,16 +28,23 @@ export default function Admin() {
 
   //   console.log("memo", memoizedTickets);
 
-  useEffect(() => {
-    fetch("/api/admin")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data?.data);
-        setTickets(data?.data);
-      });
-  }, []);
+  const getTickets = async () => {
+    const res = await fetch("/api/admin");
+    return res.json();
+  };
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["tickets"],
+    queryFn: getTickets,
+  });
+
+  if (isLoading) {
+    return <div className="p-6 text-center">Loading...</div>;
+  }
+
+  if (isError) {
+    return <div className="p-6 text-center">Error</div>;
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -48,7 +55,7 @@ export default function Admin() {
           {statusSortAsc ? "up" : "down"}
         </button>
       </div> */}
-      {tickets?.map((ticket: ITicket) => (
+      {data?.data?.map((ticket: ITicket) => (
         <Ticket
           key={ticket.id}
           id={ticket?.id}

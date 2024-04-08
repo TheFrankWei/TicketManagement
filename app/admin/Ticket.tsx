@@ -7,6 +7,7 @@ import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { ErrorMessage } from "@hookform/error-message";
 import { AnimatePresence, motion } from "framer-motion";
 import { Status } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const STATUS_OPTIONS = [
   { label: "New", value: Status.NEW },
@@ -31,7 +32,8 @@ export interface AdminTicketFormInput {
 
 export default function Ticket(Props: TicketProps) {
   const { name, status, email, description, id } = Props;
-
+  const queryClient = useQueryClient();
+  
   //status from enum
   const STATUS = STATUS_OPTIONS.filter((option) => status === option.value);
 
@@ -45,9 +47,9 @@ export default function Ticket(Props: TicketProps) {
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<AdminTicketFormInput> = async (data) => {
+  const createTicketPost = async (data: AdminTicketFormInput) => {
     const { ticketId, email, description, status } = data;
-    const res = await fetch("/api/admin", {
+    await fetch("/api/admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -57,6 +59,17 @@ export default function Ticket(Props: TicketProps) {
         description,
       }),
     });
+  };
+
+  const ticketPostMutation = useMutation({
+    mutationFn: createTicketPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    },
+  });
+
+  const onSubmit: SubmitHandler<AdminTicketFormInput> = async (data) => {
+    ticketPostMutation.mutate(data);
   };
 
   return (

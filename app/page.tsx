@@ -4,6 +4,7 @@ import Input from "@/components/Input";
 import TextArea from "@/components/TextArea";
 import { ErrorMessage } from "@hookform/error-message";
 import { AnimatePresence, motion } from "framer-motion";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface TicketFormInput {
   name: string;
@@ -19,7 +20,7 @@ export default function Home() {
     reset,
   } = useForm<TicketFormInput>();
 
-  const onSubmit: SubmitHandler<TicketFormInput> = async (data) => {
+  const createTicket = async (data: TicketFormInput) => {
     const { name, email, description } = data;
     const res = await fetch("/api", {
       method: "POST",
@@ -30,10 +31,16 @@ export default function Home() {
         description,
       }),
     });
-
-    const result = await res.json();
-    console.log(result);
   };
+
+  const ticketMutation = useMutation({
+    mutationFn: createTicket,
+  });
+
+  const onSubmit: SubmitHandler<TicketFormInput> = async (data) => {
+    ticketMutation.mutate(data);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center">
       <AnimatePresence>
@@ -103,7 +110,9 @@ export default function Home() {
                 />
               </div>
               <button type="submit" className="button">
-                Submit
+                {ticketMutation.status === "pending"
+                  ? "Submitting..."
+                  : "Submit"}
               </button>
             </form>
           </motion.div>
