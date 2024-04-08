@@ -7,7 +7,7 @@ import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { ErrorMessage } from "@hookform/error-message";
 import { AnimatePresence, motion } from "framer-motion";
 
-enum Status {
+export enum Status {
   new = "new",
   progress = "inProgress",
   resolved = "resolved",
@@ -19,23 +19,28 @@ export const STATUS_OPTIONS = [
   { label: "Resolved", value: Status.resolved },
 ];
 
-interface TicketProps {}
+interface TicketProps {
+  id: string;
+  status: Status;
+  description: string;
+}
 
-interface FormInput {
+export interface AdminTicketFormInput {
   status: Status;
   description: string;
 }
 
 export default function Ticket(Props: TicketProps) {
+  const { status, description, id } = Props;
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<FormInput>();
+  } = useForm<AdminTicketFormInput>();
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => {
+  const onSubmit: SubmitHandler<AdminTicketFormInput> = (data) => {
     console.log(
       `email sent to .\nSubject: Your issue has been updated!\nBody:\nYour issue has been updated\nStatus: ${data.status}\nIssue:\n${data?.description}`
     );
@@ -48,9 +53,15 @@ export default function Ticket(Props: TicketProps) {
           className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4 cursor-pointer transition-colors"
           onClick={() => setOpen(!open)}
         >
-          <div>Ticket Name</div>
-          <div className="group-hover:text-zealthySecondary">
-            {open ? <CaretUp size={24} /> : <CaretDown size={24} />}
+          <div className="my-auto underline"> {description}</div>
+
+          <div className="flex flex-row gap-2 items-center">
+            <div className="bg-zealthySecondary rounded-full px-4 py-2 text-white">
+              {status}
+            </div>
+            <div className="group-hover:text-zealthySecondary">
+              {open ? <CaretUp size={24} /> : <CaretDown size={24} />}
+            </div>
           </div>
         </button>
 
@@ -62,10 +73,6 @@ export default function Ticket(Props: TicketProps) {
             exit={{ opacity: 0 }}
             className="flex flex-col gap-2 px-4 pt-2 pb-4"
           >
-            <div>
-              <div>Current Status:</div>
-              <div>Latest Description:</div>
-            </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-2"
@@ -91,7 +98,7 @@ export default function Ticket(Props: TicketProps) {
               <div>
                 <TextArea
                   id="description"
-                  label="Update Description"
+                  label="Response"
                   {...register("description", {
                     required: {
                       value: true,

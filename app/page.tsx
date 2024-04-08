@@ -4,8 +4,9 @@ import Input from "@/components/Input";
 import TextArea from "@/components/TextArea";
 import { ErrorMessage } from "@hookform/error-message";
 import { AnimatePresence, motion } from "framer-motion";
+import { createTicket } from "./actions";
 
-interface FormInput {
+export interface TicketFormInput {
   name: string;
   email: string;
   description: string;
@@ -17,12 +18,22 @@ export default function Home() {
     formState: { errors, isSubmitSuccessful },
     handleSubmit,
     reset,
-  } = useForm<FormInput>();
+  } = useForm<TicketFormInput>();
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => {
-    console.log(
-      `email sent to ${data?.email}.\nSubject: Thank you for reporting your issue!\nBody:\nThank you for reporting your issue!\nIssue:\n${data?.description}`
-    );
+  const onSubmit: SubmitHandler<TicketFormInput> = async (data) => {
+    const { name, email, description } = data;
+    const res = await fetch("/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        description,
+      }),
+    });
+
+    const result = await res.json();
+    console.log(result);
   };
   return (
     <main className="flex min-h-screen flex-col items-center">
