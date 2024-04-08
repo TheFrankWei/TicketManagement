@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic"; // defaults to auto
 export async function POST(request: Request) {
   const data: TicketFormInput = await request.json();
   const { name, email, description } = data;
+  console.log(data, 'test')
   try {
     const createTicket = await prisma.ticket.create({
       data: {

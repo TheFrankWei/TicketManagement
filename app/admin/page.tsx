@@ -4,7 +4,7 @@ import { fetchTickets } from "../actions";
 import Ticket, { Status } from "./Ticket";
 import { TicketPost, Ticket as TicketType } from "@prisma/client";
 
-type ITicket = TicketType & { description: TicketPost[] };
+export type ITicket = TicketType & { description: TicketPost[] };
 
 export default function Admin() {
   const [tickets, setTickets] = useState<ITicket[]>();

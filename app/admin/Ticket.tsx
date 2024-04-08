@@ -28,8 +28,8 @@ interface TicketProps {
 }
 
 export interface AdminTicketFormInput {
-  email: string;
   id: string;
+  email: string;
   status: Status;
   description: string;
 }
@@ -40,14 +40,22 @@ export default function Ticket(Props: TicketProps) {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<AdminTicketFormInput>();
+  } = useForm<AdminTicketFormInput>({ defaultValues: { id, email } });
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<AdminTicketFormInput> = (data) => {
-    console.log(
-      `email sent to .\nSubject: Your issue has been updated!\nBody:\nYour issue has been updated\nStatus: ${data.status}\nIssue:\n${data?.description}`
-    );
+  const onSubmit: SubmitHandler<AdminTicketFormInput> = async (data) => {
+    const { id, email, description, status } = data;
+    const res = await fetch("/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        email,
+        status,
+        description,
+      }),
+    });
   };
 
   return (
