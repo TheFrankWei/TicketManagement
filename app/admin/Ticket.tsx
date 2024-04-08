@@ -33,7 +33,7 @@ export interface AdminTicketFormInput {
 export default function Ticket(Props: TicketProps) {
   const { name, status, email, description, id } = Props;
   const queryClient = useQueryClient();
-  
+
   //status from enum
   const STATUS = STATUS_OPTIONS.filter((option) => status === option.value);
 
@@ -49,7 +49,7 @@ export default function Ticket(Props: TicketProps) {
 
   const createTicketPost = async (data: AdminTicketFormInput) => {
     const { ticketId, email, description, status } = data;
-    await fetch("/api/admin", {
+    await fetch("/api/admin/ticket", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

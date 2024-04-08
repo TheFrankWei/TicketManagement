@@ -109,7 +109,11 @@ export default function Home() {
                   render={({ message }) => <p className="error">{message}</p>}
                 />
               </div>
-              <button type="submit" className="button">
+              <button
+                type="submit"
+                className="button disabled:bg-zealthyNeutralSecondary"
+                disabled={ticketMutation.status === "pending"}
+              >
                 {ticketMutation.status === "pending"
                   ? "Submitting..."
                   : "Submit"}
