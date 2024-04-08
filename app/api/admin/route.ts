@@ -1,44 +1,36 @@
 import prisma from "@/lib/prisma";
 import { TicketFormInput } from "../../page";
-import { Status } from "../../admin/Ticket";
+import { AdminTicketFormInput, Status } from "../../admin/Ticket";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 
 export async function POST(request: Request) {
+  const data: AdminTicketFormInput = await request.json();
+  const {email, id, status, description } = data;
   try {
-    const formData = await request.formData();
-    const rawFormData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      description: formData.get("description"),
-    };
-    // const createTicket = await prisma.ticket.create({
-    //   data: {
-    //     name: rawFormData?.name,
-    //     email: rawFormData?.email,
-    //     description: {
-    //       createMany: {
-    //         data: [
-    //           { status: Status.new, description: rawFormData?.description },
-    //         ],
-    //       },
-    //     },
-    //   },
-    // });
-
+    const createTicketPost = await prisma.ticketPost.create({
+      data: {
+        description,
+        status,
+        ticketId: id,
+      },
+    });
+    console.log(
+      `email sent to ${email}.\nSubject: Thank you for reporting your issue!\nBody:\nThank you for reporting your issue!\nIssue:\n${description}`
+    );
     return NextResponse.json(
       {
-        data: rawFormData,
+        data: createTicket,
       },
       {
         status: 200,
       }
     );
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       {
-        message: "Error",
+        error: error,
       },
       {
         status: 400,

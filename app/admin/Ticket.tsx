@@ -28,6 +28,8 @@ interface TicketProps {
 }
 
 export interface AdminTicketFormInput {
+  email: string;
+  id: string;
   status: Status;
   description: string;
 }
