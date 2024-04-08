@@ -12,17 +12,17 @@ datasource db {
 
 model TicketPost {
     id          String   @id @default(cuid())
-    status      String?
-    description String?
-    ticket      Ticket?  @relation(fields: [ticketId], references: [id])
-    ticketId    String?
+    status      String
+    description String
+    ticket      Ticket  @relation(fields: [ticketId], references: [id])
+    ticketId    String
     createdAt   DateTime @default(now()) @map(name: "created_at")
 }
 
 model Ticket {
     id          String       @id @default(cuid())
-    name        String?
-    email       String?      @unique
+    name        String
+    email       String       @unique
     createdAt   DateTime     @default(now()) @map(name: "created_at")
     updatedAt   DateTime     @updatedAt @map(name: "updated_at")
     description TicketPost[]

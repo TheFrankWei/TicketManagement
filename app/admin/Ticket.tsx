@@ -21,6 +21,8 @@ export const STATUS_OPTIONS = [
 
 interface TicketProps {
   id: string;
+  name: string;
+  email: string;
   status: Status;
   description: string;
 }
@@ -31,7 +33,7 @@ export interface AdminTicketFormInput {
 }
 
 export default function Ticket(Props: TicketProps) {
-  const { status, description, id } = Props;
+  const { name, status, email, description, id } = Props;
   const {
     register,
     formState: { errors },
@@ -53,8 +55,10 @@ export default function Ticket(Props: TicketProps) {
           className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4 cursor-pointer transition-colors"
           onClick={() => setOpen(!open)}
         >
-          <div className="my-auto underline"> {description}</div>
-
+          <div className="my-auto col-gap-2 text-start">
+            <div>{name}</div>
+            <div>{email}</div>
+          </div>
           <div className="flex flex-row gap-2 items-center">
             <div className="bg-zealthySecondary rounded-full px-4 py-2 text-white">
               {status}
@@ -73,6 +77,10 @@ export default function Ticket(Props: TicketProps) {
             exit={{ opacity: 0 }}
             className="flex flex-col gap-2 px-4 pt-2 pb-4"
           >
+            <div className="flex flex-col">
+              <div>Request:</div>
+              <div>{description}</div>
+            </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-2"
@@ -98,7 +106,7 @@ export default function Ticket(Props: TicketProps) {
               <div>
                 <TextArea
                   id="description"
-                  label="Response"
+                  label="Response:"
                   {...register("description", {
                     required: {
                       value: true,

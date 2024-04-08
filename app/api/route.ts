@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic"; // defaults to auto
 export async function POST(request: Request) {
   const data: TicketFormInput = await request.json();
   const { name, email, description } = data;
-  console.log(data, 'test')
   try {
     const createTicket = await prisma.ticket.create({
       data: {
@@ -21,7 +20,6 @@ export async function POST(request: Request) {
         },
       },
     });
-
     console.log(
       `email sent to ${email}.\nSubject: Thank you for reporting your issue!\nBody:\nThank you for reporting your issue!\nIssue:\n${description}`
     );
@@ -33,10 +31,10 @@ export async function POST(request: Request) {
         status: 200,
       }
     );
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       {
-        message: "Error",
+        error: error,
       },
       {
         status: 400,

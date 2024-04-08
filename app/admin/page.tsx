@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchTickets } from "../actions";
-import Ticket from "./Ticket";
-import { Ticket as TicketType } from "@prisma/client";
+import Ticket, { Status } from "./Ticket";
+import { TicketPost, Ticket as TicketType } from "@prisma/client";
 
-export default function Admin({ props }: { props: any }) {
-  const [tickets, setTickets] = useState<any>([]);
+type ITicket = TicketType & { description: TicketPost[] };
+
+export default function Admin() {
+  const [tickets, setTickets] = useState<ITicket[]>();
   useEffect(() => {
     fetch("/api/admin")
       .then((res) => {
@@ -19,12 +21,14 @@ export default function Admin({ props }: { props: any }) {
   return (
     <main className="flex min-h-screen flex-col items-center">
       <div className="py-6 text-bold">Tickets</div>
-      {tickets?.map((ticket) => (
+      {tickets?.map((ticket: ITicket) => (
         <Ticket
           key={ticket.id}
           id={ticket?.id}
+          name={ticket?.name}
+          email={ticket?.email}
           description={ticket?.description[0]?.description}
-          status={ticket?.description[0]?.status}
+          status={ticket?.description[0]?.status as Status}
         />
       ))}
 
