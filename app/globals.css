@@ -16,7 +16,7 @@
 
 @layer base {
   body {
-    @apply bg-zealthyNeutralPrimary  text-black overflow-hidden;
+    @apply bg-zealthyNeutralPrimary  text-black overflow-y-auto
   }
 }
 
