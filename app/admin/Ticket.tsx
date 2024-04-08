@@ -40,6 +40,7 @@ export default function Ticket(Props: TicketProps) {
   const {
     register,
     formState: { errors },
+    reset,
     handleSubmit,
   } = useForm<AdminTicketFormInput>({
     defaultValues: { ticketId: id, email, status: STATUS[0]?.value },
@@ -65,6 +66,8 @@ export default function Ticket(Props: TicketProps) {
     mutationFn: createTicketPost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      reset();
+      setOpen(false);
     },
   });
 
