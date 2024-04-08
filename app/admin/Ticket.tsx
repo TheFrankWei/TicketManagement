@@ -6,17 +6,12 @@ import { useState } from "react";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import { ErrorMessage } from "@hookform/error-message";
 import { AnimatePresence, motion } from "framer-motion";
+import { Status } from "@prisma/client";
 
-export enum Status {
-  new = "new",
-  progress = "inProgress",
-  resolved = "resolved",
-}
-
-export const STATUS_OPTIONS = [
-  { label: "New", value: Status.new },
-  { label: "In Progress", value: Status.progress },
-  { label: "Resolved", value: Status.resolved },
+const STATUS_OPTIONS = [
+  { label: "New", value: Status.NEW },
+  { label: "In Progress", value: Status.INPROGRESS },
+  { label: "Resolved", value: Status.RESOLVED },
 ];
 
 interface TicketProps {
@@ -28,7 +23,7 @@ interface TicketProps {
 }
 
 export interface AdminTicketFormInput {
-  id: string;
+  ticketId: string;
   email: string;
   status: Status;
   description: string;
@@ -36,21 +31,27 @@ export interface AdminTicketFormInput {
 
 export default function Ticket(Props: TicketProps) {
   const { name, status, email, description, id } = Props;
+
+  //status from enum
+  const STATUS = STATUS_OPTIONS.filter((option) => status === option.value);
+
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<AdminTicketFormInput>({ defaultValues: { id, email } });
+  } = useForm<AdminTicketFormInput>({
+    defaultValues: { ticketId: id, email, status: STATUS[0]?.value },
+  });
 
   const [open, setOpen] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<AdminTicketFormInput> = async (data) => {
-    const { id, email, description, status } = data;
-    const res = await fetch("/api", {
+    const { ticketId, email, description, status } = data;
+    const res = await fetch("/api/admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id,
+        ticketId,
         email,
         status,
         description,
@@ -59,7 +60,7 @@ export default function Ticket(Props: TicketProps) {
   };
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-1 w-full border-b-2 border-solid border-zealthyNeutralSecondary">
       <AnimatePresence>
         <button
           className="flex flex-row justify-between group hover:bg-zealthyNeutralSecondary py-6 px-4 cursor-pointer transition-colors"
@@ -71,7 +72,7 @@ export default function Ticket(Props: TicketProps) {
           </div>
           <div className="flex flex-row gap-2 items-center">
             <div className="bg-zealthySecondary rounded-full px-4 py-2 text-white">
-              {status}
+              {STATUS[0]?.label}
             </div>
             <div className="group-hover:text-zealthySecondary">
               {open ? <CaretUp size={24} /> : <CaretDown size={24} />}
@@ -130,7 +131,7 @@ export default function Ticket(Props: TicketProps) {
                   render={({ message }) => <p className="error">{message}</p>}
                 />
               </div>
-              <div className="text-center md:text-end pt-2">
+              <div className="text-center md:text-start pt-2">
                 <button type="submit" className="button">
                   Submit
                 </button>

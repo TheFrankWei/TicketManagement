@@ -1,20 +1,19 @@
 import prisma from "@/lib/prisma";
-import { TicketFormInput } from "../../page";
-import { AdminTicketFormInput, Status } from "../../admin/Ticket";
+import { AdminTicketFormInput } from "../../admin/Ticket";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 
 export async function POST(request: Request) {
   const data: AdminTicketFormInput = await request.json();
-  const { email, id, status, description } = data;
-  console.log(data, 'admin test')
+  const { email, ticketId, status, description } = data;
+  console.log(data, "admin test");
   try {
     const createTicketPost = await prisma.ticketPost.create({
       data: {
         description,
         status,
-        ticketId: id,
+        ticketId,
       },
     });
     //email field is being sent from FE but alternatively could write a prisma query to find email of ticketId

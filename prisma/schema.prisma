@@ -12,9 +12,9 @@ datasource db {
 
 model TicketPost {
     id          String   @id @default(cuid())
-    status      String
+    status      Status
     description String
-    ticket      Ticket  @relation(fields: [ticketId], references: [id])
+    ticket      Ticket   @relation(fields: [ticketId], references: [id])
     ticketId    String
     createdAt   DateTime @default(now()) @map(name: "created_at")
 }
@@ -22,10 +22,16 @@ model TicketPost {
 model Ticket {
     id          String       @id @default(cuid())
     name        String
-    email       String       @unique
+    email       String
     createdAt   DateTime     @default(now()) @map(name: "created_at")
     updatedAt   DateTime     @updatedAt @map(name: "updated_at")
     description TicketPost[]
 
     @@map(name: "tickets")
+}
+
+enum Status {
+    NEW
+    INPROGRESS
+    RESOLVED
 }

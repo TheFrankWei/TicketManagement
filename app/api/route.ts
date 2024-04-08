@@ -1,14 +1,14 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { TicketFormInput } from "../page";
-import { Status } from "../admin/Ticket";
+import { Status } from "@prisma/client";
+
 
 export const dynamic = "force-dynamic"; // defaults to auto
 
 export async function POST(request: Request) {
   const data: TicketFormInput = await request.json();
   const { name, email, description } = data;
-  console.log(data, 'test')
   try {
     const createTicket = await prisma.ticket.create({
       data: {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         email,
         description: {
           createMany: {
-            data: [{ status: Status.new, description: description }],
+            data: [{ status: Status.NEW, description: description }],
           },
         },
       },
