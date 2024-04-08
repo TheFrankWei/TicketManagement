@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     );
     return NextResponse.json(
       {
-        data: createTicket,
+        data: createTicketPost,
       },
       {
         status: 200,
