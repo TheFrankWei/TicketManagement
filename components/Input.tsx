@@ -16,7 +16,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       {error && (
         <ErrorMessage
           errors={error}
-          name="email"
+          name={id}
           render={({ message }) => <p className="error">{message}</p>}
         />
       )}
