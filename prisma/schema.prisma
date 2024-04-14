@@ -13,7 +13,7 @@ datasource db {
 model TicketPost {
     id          String   @id @default(cuid())
     status      Status
-    description String
+    description String?
     ticket      Ticket   @relation(fields: [ticketId], references: [id])
     ticketId    String
     createdAt   DateTime @default(now()) @map(name: "created_at")

@@ -3,40 +3,50 @@ import { useEffect, useMemo, useState } from "react";
 import Ticket from "./Ticket";
 import { TicketPost, Ticket as TicketType, Status } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
+import { CaretDown, CaretUp } from "@phosphor-icons/react";
 
 export type ITicket = TicketType & { description: TicketPost[] };
 
 export default function Admin() {
-
-  //   const [statusSortAsc, setStatusSorcAsc] = useState<boolean>(false);
-
-  //   const memoizedTickets = useMemo(() => {
-  //     const sortedTickets = tickets?.sort((a, b) => {
-  //       const aStatus = a.description[0].status.charAt(0);
-  //       const bStatus = b.description[0].status.charAt(0);
-  //       if (statusSortAsc) {
-  //         console.log(aStatus, bStatus)
-  //         aStatus > bStatus ? -1 : 1;
-  //         return 0;
-  //       } else {
-  //         aStatus > bStatus ? -1 : 1;
-  //         return 0;
-  //       }
-  //     });
-  //     return sortedTickets;
-  //   }, [statusSortAsc, tickets]);
-
-  //   console.log("memo", memoizedTickets);
+  const [statusSortAsc, setStatusSorcAsc] = useState<boolean>(false);
+  // const [skip, setSkip] = useState<number>(0);
+  // const take = 5;
 
   const getTickets = async () => {
-    const res = await fetch("/api/admin");
+    const res = await fetch("/api/admin"); //add ?skip=skip&take=take
     return res.json();
   };
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["tickets"],
-    queryFn: getTickets,
+    queryFn: getTickets, //pass in skip
   });
+
+  const memoizedTickets = useMemo(() => {
+    const sortedTickets = data?.data?.sort((a: ITicket, b: ITicket) => {
+      const aDate = new Date(a?.createdAt).getTime();
+
+      const bDate = new Date(b?.createdAt).getTime();
+      if (statusSortAsc) {
+        if (aDate < bDate) {
+          return -1;
+        } else if (aDate > bDate) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        if (aDate > bDate) {
+          return -1;
+        } else if (aDate < bDate) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    });
+    return sortedTickets;
+  }, [statusSortAsc, data]);
 
   if (isLoading) {
     return <div className="p-6 text-center">Loading...</div>;
@@ -47,24 +57,30 @@ export default function Admin() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
-      <div className="py-6 text-bold">Tickets</div>
-      {/* <div>
-        Sort By: Status
-        <button onClick={() => setStatusSorcAsc(!statusSortAsc)}>
-          {statusSortAsc ? "up" : "down"}
-        </button>
-      </div> */}
-      {data?.data?.map((ticket: ITicket) => (
+    <main className="flex min-h-screen flex-col items-center pb-64">
+      <div className="flex flex-row justify-between w-full">
+        <div className="py-6 text-bold">Tickets</div>
+        <div className="py-6 text-bold flex flex-row gap-2">
+          <div>Sort By Date</div>
+          <button onClick={() => setStatusSorcAsc(!statusSortAsc)}>
+            {statusSortAsc ? <CaretUp size={24} /> : <CaretDown size={24} />}
+          </button>
+        </div>
+      </div>
+      {memoizedTickets?.map((ticket: ITicket) => (
         <Ticket
           key={ticket.id}
           id={ticket?.id}
           name={ticket?.name}
           email={ticket?.email}
-          description={ticket?.description[0]?.description}
-          status={ticket?.description[0]?.status as Status}
+          createdAt={ticket?.createdAt}
+          description={ticket?.description}
+          status={
+            ticket?.description[ticket?.description.length - 1]?.status as Status
+          }
         />
       ))}
+      <div>{/*pagination stuff, map the total count/take for tabs*/}</div>
     </main>
   );
 }

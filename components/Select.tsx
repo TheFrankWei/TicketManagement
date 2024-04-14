@@ -1,3 +1,4 @@
+import { ErrorMessage } from "@hookform/error-message";
 import { forwardRef } from "react";
 
 interface SelectProps
@@ -5,13 +6,19 @@ interface SelectProps
   id: string;
   label?: string;
   options: { label: string; value: string }[];
+  error?: any;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ id, label = id, options, ...rest }, ref) => (
+  ({ id, label = id, options, error, ...rest }, ref) => (
     <div className="flex flex-col gap-1">
       <label htmlFor={id}>{label}</label>
-      <select id={id} ref={ref} {...rest} className="text-black border border-black">
+      <select
+        id={id}
+        ref={ref}
+        {...rest}
+        className="text-black border border-black"
+      >
         {options.map((option) => (
           <option
             className="text-black"
@@ -22,6 +29,13 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </option>
         ))}
       </select>
+      {error && (
+        <ErrorMessage
+          errors={error}
+          name="email"
+          render={({ message }) => <p className="error">{message}</p>}
+        />
+      )}
     </div>
   )
 );

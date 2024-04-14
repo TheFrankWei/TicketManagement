@@ -20,18 +20,20 @@ interface TicketProps {
   name: string;
   email: string;
   status: Status;
-  description: string;
+  description: any;
+  createdAt: Date;
 }
 
 export interface AdminTicketFormInput {
   ticketId: string;
   email: string;
   status: Status;
-  description: string;
+  description?: string;
 }
 
 export default function Ticket(Props: TicketProps) {
-  const { name, status, email, description, id } = Props;
+  const { name, status, email, description, createdAt, id } = Props;
+  const createdDate = new Date(createdAt);
   const queryClient = useQueryClient();
 
   //status from enum
@@ -67,7 +69,6 @@ export default function Ticket(Props: TicketProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
       reset();
-      //   setOpen(false);
     },
   });
 
@@ -87,11 +88,16 @@ export default function Ticket(Props: TicketProps) {
             <div>{email}</div>
           </div>
           <div className="flex flex-row gap-2 items-center">
+            <div>{createdDate.toString()}</div>
             <div className="bg-zealthySecondary rounded-full px-4 py-2 text-white">
               {STATUS[0]?.label}
             </div>
             <div className="group-hover:text-zealthySecondary">
-              {open ? <CaretUp size={24} /> : <CaretDown size={24} />}
+              {open ? (
+                <CaretDown size={24} alt="latest" />
+              ) : (
+                <CaretUp size={24} alt="earliest" />
+              )}
             </div>
           </div>
         </button>
@@ -106,47 +112,49 @@ export default function Ticket(Props: TicketProps) {
           >
             <div className="flex flex-col">
               <div>Request:</div>
-              <div>{description}</div>
+              <div className="bg-zealthyNeutralSecondary p-2 rounded-full w-fit">
+                {description[0]?.description}
+              </div>
+              <div>Previous Responses:</div>
+              <div className="flex flex-col gap-1">
+                {description.slice(1).map(
+                  (item: any, index: number) =>
+                    item?.description && (
+                      <div
+                        key={index}
+                        className="bg-zealthyNeutralSecondary p-2 rounded-full w-fit"
+                      >
+                        {item?.description}
+                      </div>
+                    )
+                )}
+              </div>
             </div>
+
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-2"
             >
-              <div className="w-fit">
-                <Select
-                  id="status"
-                  label="Update Status"
-                  options={STATUS_OPTIONS}
-                  {...register("status", {
-                    required: {
-                      value: true,
-                      message: "Status is required",
-                    },
-                  })}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name="status"
-                  render={({ message }) => <p className="error">{message}</p>}
-                />
-              </div>
-              <div>
-                <TextArea
-                  id="description"
-                  label="Response:"
-                  {...register("description", {
-                    required: {
-                      value: true,
-                      message: "Description is required",
-                    },
-                  })}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name="description"
-                  render={({ message }) => <p className="error">{message}</p>}
-                />
-              </div>
+              <Select
+                id="status"
+                label="Update Status"
+                options={STATUS_OPTIONS}
+                {...register("status", {
+                  required: {
+                    value: true,
+                    message: "Status is required",
+                  },
+                })}
+                error={errors}
+              />
+
+              <TextArea
+                id="description"
+                label="Response:"
+                {...register("description", {})}
+                error={errors}
+              />
+
               <div className="text-center md:text-start pt-2">
                 <button
                   type="submit"

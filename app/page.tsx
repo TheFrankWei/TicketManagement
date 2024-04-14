@@ -62,60 +62,43 @@ export default function Home() {
             key="form"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            className="w-full"
           >
             <form
               className="flex flex-col gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div>
-                <Input
-                  id="Name"
-                  {...register("name", {
-                    required: { value: true, message: "Name is required" },
-                  })}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name="name"
-                  render={({ message }) => <p className="error">{message}</p>}
-                />
-              </div>
-              <div>
-                <Input
-                  id="Email"
-                  {...register("email", {
-                    required: { value: true, message: "Email is required" },
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
-                    },
-                  })}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name="email"
-                  render={({ message }) => <p className="error">{message}</p>}
-                />
-              </div>
-              <div>
-                <TextArea
-                  id="Description"
-                  {...register("description", {
-                    required: {
-                      value: true,
-                      message: "Description is required",
-                    },
-                  })}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name="description"
-                  render={({ message }) => <p className="error">{message}</p>}
-                />
-              </div>
+              <Input
+                id="Name"
+                {...register("name", {
+                  required: { value: true, message: "Name is required" },
+                })}
+                error={errors}
+              />
+              <Input
+                id="Email"
+                {...register("email", {
+                  required: { value: true, message: "Email is required" },
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+                error={errors}
+              />
+              <TextArea
+                id="Description"
+                {...register("description", {
+                  required: {
+                    value: true,
+                    message: "Description is required",
+                  },
+                })}
+                error={errors}
+              />
               <button
                 type="submit"
-                className="button"
+                className="button w-80 m-auto"
                 disabled={ticketMutation.status === "pending"}
               >
                 {ticketMutation.status === "pending"
